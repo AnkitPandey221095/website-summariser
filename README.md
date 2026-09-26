@@ -9,7 +9,7 @@ An AI-powered web application that allows users to enter any public webpage URL,
 ## 🚀 Live Demo
 
 🔗 **Live Application:**  
-https://YOUR-LIVE-LINK.onrender.com
+https://website-summariser.onrender.com/
 
 ---
 
@@ -17,11 +17,11 @@ https://YOUR-LIVE-LINK.onrender.com
 
 ### Application UI
 
-![AI Website Summariser](./screenshots/home.png)
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/5a1e3cb8-b790-4e25-9745-6d8b8b39a231" />
 
 ### AI Generated Summary
 
-![AI Summary](./screenshots/summary.png)
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/d441fcbc-3121-45d9-a414-46d8f93c7fa3" />
 
 > Screenshots demonstrate the application's responsive UI, URL input, loading state, and AI-generated summary.
 
