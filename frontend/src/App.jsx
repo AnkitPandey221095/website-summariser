@@ -1,122 +1,86 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Header from "./components/Header";
+import UrlForm from "./components/UrlForm";
+import Loading from "./components/Loading";
+import SummaryCard from "./components/SummaryCard";
+import { summarizeWebsite } from "./services/api";
+
+
+const App = () => {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+
+  const handleSummarize = async (url) => {
+    try {
+      setLoading(true);
+      setError("");
+      setResult(null);
+
+      const response = await summarizeWebsite(url);
+
+      if (response.success) {
+        setResult(response.data.summary);
+      } else {
+        setError(response.message || "Something went wrong.");
+      }
+    } catch (error) {
+      console.error("Summarization error:", error);
+
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError(
+          "Unable to summarize the webpage. Please check the URL and try again."
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app">
+      <Header />
 
-      <div className="ticks"></div>
+      <main className="main-content">
+        <section className="hero-section">
+          <div className="hero-content">
+            <span className="hero-badge">✦ AI POWERED</span>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            <h1>
+              Understand any website
+              <span> in seconds.</span>
+            </h1>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
+            <p>
+              Paste a public website URL and let AI extract the important
+              information for you.
+            </p>
 
-export default App
+            <UrlForm onSubmit={handleSummarize} loading={loading} />
+          </div>
+        </section>
+
+        {error && (
+          <div className="error-message">
+            <span>⚠️</span>
+            <p>{error}</p>
+          </div>
+        )}
+
+        {loading && <Loading />}
+
+        {!loading && result && <SummaryCard result={result} />}
+      </main>
+
+      <footer className="footer">
+        <p>Built with React, Node.js & Groq AI</p>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
